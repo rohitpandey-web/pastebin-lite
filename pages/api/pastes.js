@@ -39,37 +39,26 @@ export default async function handler(req, res) {
 
   const { content, ttl_seconds, max_views } = req.body;
 
-  // ✅ Validation (IMPORTANT for tests)
-  if (!content || typeof content !== "string" || content.trim() === "") {
-    return res.status(400).json({ error: "Invalid content" });
+  if (!content) {
+    return res.status(400).json({ error: "Content is required" });
   }
 
-  if (ttl_seconds !== undefined && (!Number.isInteger(ttl_seconds) || ttl_seconds < 1)) {
-    return res.status(400).json({ error: "Invalid ttl_seconds" });
-  }
+  const id = crypto.randomBytes(4).toString("hex");
 
-  if (max_views !== undefined && (!Number.isInteger(max_views) || max_views < 1)) {
-    return res.status(400).json({ error: "Invalid max_views" });
-  }
-
-  const id = crypto.randomBytes(6).toString("hex");
-
-  const now = Date.now();
-  const expiresAt = ttl_seconds ? now + ttl_seconds * 1000 : null;
+  const expiresAt = ttl_seconds
+    ? Date.now() + ttl_seconds * 1000
+    : null;
 
   const paste = {
     content,
-    createdAt: now,
     expiresAt,
-    maxViews: max_views ?? null,
+    maxViews: max_views || null,
     views: 0,
   };
 
-  // ✅ Redis save (NO in-memory)
   await kv.set(`paste:${id}`, paste);
 
   return res.status(201).json({
-    id,
-    url: `${req.headers.origin}/p/${id}`,
+    url: `/p/${id}`,
   });
 }
