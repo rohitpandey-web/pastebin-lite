@@ -37,13 +37,30 @@ export default function Home() {
           Pastebin Lite
         </h1>
 
-        <textarea
+        {/* <textarea
           className="w-full border rounded p-3 text-sm"
           placeholder="Enter your paste content..."
           rows={6}
           onChange={(e) => setContent(e.target.value)}
-        />
+        /> */}
 
+        <textarea
+              className="w-full border rounded p-3 text-sm"
+              placeholder="Enter your paste content..."
+              rows={6}
+              list="paste-suggestions"
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+            />
+
+            <datalist id="paste-suggestions">
+              <option value="Hello World" />
+              <option value="console.log()" />
+              <option value="function example() {}" />
+              <option value="Sample text for paste" />
+        </datalist>
+
+{/* 
         <div className="flex gap-3 mt-4">
           <input
             className="w-1/2 border rounded p-2 text-sm"
@@ -55,7 +72,27 @@ export default function Home() {
             placeholder="Max Views"
             onChange={(e) => setViews(e.target.value)}
           />
-        </div>
+        </div> */}
+
+        <input
+              type="number"
+              min={1}
+              step={1}
+              className="w-1/2 border rounded p-2 text-sm"
+              placeholder="TTL (seconds)"
+              value={ttl}
+              onChange={(e) => setTtl(e.target.value)}
+            />
+
+            <input
+              type="number"
+              min={1}
+              step={1}
+              className="w-1/2 border rounded p-2 text-sm"
+              placeholder="Max Views"
+              value={views}
+              onChange={(e) => setViews(e.target.value)}
+            />
 
         <button
           onClick={createPaste}
